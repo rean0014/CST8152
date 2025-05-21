@@ -1,0 +1,38 @@
+commit 7a5817f5c2c462d1bb1206dec8e1e1fe5037f966
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Wed May 21 12:37:57 2025 -0400
+
+    renaming folders
+
+commit 2a2684b2d2f991c49f71d036a5c462aa5f4f4871
+Merge: 2580fbc 32c7f55
+Author: rean0014 <163601743+rean0014@users.noreply.github.com>
+Date:   Wed May 21 12:36:46 2025 -0400
+
+    Merge pull request #1 from rean0014/a1branch
+    
+    names
+
+commit 32c7f551aac68e2120800a4fd6104c16dff6e763
+Author: Bianca Reaney Ibarra <rean0014@algonquinlive.com>
+Date:   Wed May 21 12:30:11 2025 -0400
+
+    names
+
+commit 2580fbc1a25e6fd7bf54f389bc3c5fdcb6e65a95
+Author: rean0014 <163601743+rean0014@users.noreply.github.com>
+Date:   Wed May 21 12:22:50 2025 -0400
+
+    organizing repo
+
+commit 26afa82bc27e9e5bb79eda7e2e47e09413368c57
+Author: rean0014 <163601743+rean0014@users.noreply.github.com>
+Date:   Wed May 21 12:17:40 2025 -0400
+
+    Add files via upload
+
+commit 78d7e92d1c77d0c5101308b8c96886c3dd55168b
+Author: Bianca Reaney Ibarra <rean0014@algonquinlive.com>
+Date:   Thu May 15 09:48:44 2025 -0400
+
+    logo
