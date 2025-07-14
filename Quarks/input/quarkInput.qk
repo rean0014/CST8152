@@ -1,0 +1,12 @@
+~ Quarks Test ~
+~Welcome to Quarks
+Here is a multi line 
+comment~
+
+par pau = qkUp <> qkDown'
+
+&pau + 1 = 5'
+
+function sub (&pau, par &lo) {
+  return &pau - &lo'
+}

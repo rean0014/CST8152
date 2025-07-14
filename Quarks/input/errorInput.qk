@@ -1,0 +1,5 @@
+int ^name^ : print("%c", whatever);
+
+#This is not how you do a comment #
+~This is how you do a comment, but don't
+forget to terminate your comment!
