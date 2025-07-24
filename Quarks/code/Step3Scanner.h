@@ -69,7 +69,7 @@
 #define RTE_CODE 1  /* Value for run-time error */
 
 /* TO_DO: Define the number of tokens */
-#define NUM_TOKENS 24
+#define NUM_TOKENS 25
 
 /* TO_DO: Define Token codes - Create your token classes */
 enum TOKENS {
@@ -97,6 +97,7 @@ enum TOKENS {
 	FLT_T,		/* 21: Floating-point literal token */
 	REL_T,		/* 22: Relational operator token*/
 	AMP_T,		/* 23: Ampersand token (&) */
+	COMMA_T		/* 24: Comma token ',' */
 };
 
 /* TO_DO: Define the list of keywords */
@@ -124,7 +125,8 @@ static q_str tokenStrTable[NUM_TOKENS] = {
 	"ART_T",
 	"FLT_T",
 	"REL_T",
-	"AMP_T"
+	"AMP_T",
+	"COMMA_T"
 };
 
 /* TO_DO: Operators token attributes */
@@ -315,7 +317,7 @@ Token funcFLT(q_str lexeme);
 /* TO_DO: Define final state table */
 static PTR_ACCFUN finalStateTable[NUM_STATES] = {
 	/*  0 */ NULL,        // Start state (non-accepting)
-	/*  1 */ funcID,      // Identifier (valid)
+	/*  1 */ funcKEY,      // Identifier (valid)
 	/*  2 */ funcErr,     // Invalid mixed identifier
 	/*  3 */ funcID,      // Identifier that may be a keyword
 	/*  4 */ NULL,        // Inside string literal
@@ -364,12 +366,12 @@ static q_str keywordTable[KWT_SIZE] = {
 	"while",		/* KW09 */
 	"do",			/* KW10 */
 	"return",		/* KW11 */
-	"qkUp",	/* KW12 */
-	"qkDown", /* KW13 */
-	"qkStrange", /* KW14 */
-	"qkCharm", /* KW15 */
-	"qkTop", /* KW16 */
-	"qkBottom", /* KW17 */
+	"qkUp",			/* KW12 */
+	"qkDown", 		/* KW13 */
+	"qkStrange", 	/* KW14 */
+	"qkCharm", 		/* KW15 */
+	"qkTop", 		/* KW16 */
+	"qkBottom",		/* KW17 */
 };
 
 /* NEW SECTION: About indentation */

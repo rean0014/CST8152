@@ -209,7 +209,7 @@ Token tokenizer(q_void) {
 
 				while (1) {
 						c2 = readerGetChar(sourceBuffer);
-						if (isalnum(c2) || c2 == '_') {
+						if ((isalnum(c2) || c2 == '_') && c2 != SQT_CHR) {
 								readerAddChar(lexemeBuffer, c2);
 						} else {
 								readerRetract(sourceBuffer); // retract non-id char
@@ -241,9 +241,6 @@ Token tokenizer(q_void) {
 							return currentToken;
 					}
 				}
-
-
-
 			case EQL_CHR:   // '='
 				currentToken.code = ASSIGN_T;
 				scData.scanHistogram[currentToken.code]++;
@@ -340,6 +337,11 @@ Token tokenizer(q_void) {
 
 				return currentToken;
 
+			case CMA_CHR:
+				currentToken.code = COMMA_T;
+				scData.scanHistogram[currentToken.code]++;
+				return currentToken;
+
 			default:
 				state = nextState(state, c);
 				lexStart = readerGetPosRead(sourceBuffer) - 1;
@@ -350,7 +352,10 @@ Token tokenizer(q_void) {
 
 						// Stop scanning if we hit a delimiter or the single quote
 						if (c == SPC_CHR || c == TAB_CHR || c == NWL_CHR || c == EOS_CHR ||
-								c == (q_char)EOF_CHR || c == SQT_CHR) {
+								c == (q_char)EOF_CHR || c == SQT_CHR || c == CMA_CHR ||
+								c == LPR_CHR || c == RPR_CHR || c == LBR_CHR || c == RBR_CHR ||
+								c == LTN_CHR || c == GTN_CHR || c == EQL_CHR ||
+								c == PLS_CHR || c == MIN_CHR || c == MUL_CHR || c == DIV_CHR) {
 								
 								q_int currentPos = readerGetPosRead(sourceBuffer);
 								if (currentPos > 0) {
@@ -611,85 +616,34 @@ Token funcIL(q_str lexeme) {
 Token funcID(q_str lexeme) {
 	Token currentToken = {0};
 
-	// Check for arithmetic operators
-	if (strcmp(lexeme, "+") == 0) {
-		currentToken.code = ART_T;
-		currentToken.attribute.arithmeticOperator = OP_ADD;
-		return currentToken;
-	}
-	if (strcmp(lexeme, "-") == 0) {
-		currentToken.code = ART_T;
-		currentToken.attribute.arithmeticOperator = OP_SUB;
-		return currentToken;
-	}
-	if (strcmp(lexeme, "*") == 0) {
-		currentToken.code = ART_T;
-		currentToken.attribute.arithmeticOperator = OP_MUL;
-		return currentToken;
-	}
-	if (strcmp(lexeme, "/") == 0) {
-		currentToken.code = ART_T;
-		currentToken.attribute.arithmeticOperator = OP_DIV;
-		return currentToken;
-	}
+	// Must start with letter or underscore
+    if (!isalpha(lexeme[0]) && lexeme[0] != '_') {
+        currentToken.code = ERR_T;
+        snprintf(currentToken.attribute.errLexeme, ERR_LEN, "Invalid ID start: '%s'", lexeme);
+        currentToken.attribute.errLexeme[ERR_LEN] = '\0';
+        return currentToken;
+    }
 
-	// Check relational operators
-	if (strcmp(lexeme, "==") == 0 || strcmp(lexeme, "!=") == 0){
-		currentToken.code = REL_T;
-		return currentToken;
-	}
-	
-	if (strcmp(lexeme, "<") == 0) {
-		currentToken.code = LTN_T;
-		return currentToken;
-	}
-
-	if (strcmp(lexeme, "<=") == 0) {
-		currentToken.code = LTE_T;
-		return currentToken;
-	}
-
-	if (strcmp(lexeme, ">") == 0) {
-		currentToken.code = GTN_T;
-		return currentToken;
-	}
-
-	if (strcmp(lexeme, ">=") == 0) {
-		currentToken.code = GTE_T;
-		return currentToken;
-	}
-
-	if (strcmp(lexeme, "<>") == 0) {
-		currentToken.code = COMB_T;
-		return currentToken;
-	}
-
-	// Check assignment operator '='
-	if (strcmp(lexeme, "=") == 0) {
-		currentToken.code = ASSIGN_T;
-		return currentToken;
-	}
-
-	// Check keywords
-	for (q_int i = 0; i < KWT_SIZE; i++) {
-		if (strcmp(lexeme, keywordTable[i]) == 0) {
-			currentToken.code = KW_T;
-			currentToken.attribute.keywordIndex = i;
-			return currentToken;
+		q_char c2;
+		while (1) {
+				c2 = readerGetChar(sourceBuffer);
+				if ((isalnum(c2) || c2 == '_') && c2 != SQT_CHR) {
+						readerAddChar(lexemeBuffer, c2);
+				} else {
+						readerRetract(sourceBuffer); // retract non-id char
+						break;
+				}
 		}
-	}
 
-	// Default: identifier
-	currentToken.code = ID_T;
+		readerAddChar(lexemeBuffer, READER_TERMINATOR);
+		lexeme = readerGetContent(lexemeBuffer, 0);
 
-	if (strlen(lexeme) <= VID_LEN) {
-		strcpy(currentToken.attribute.idLexeme, lexeme);
-	} else {
-		strncpy(currentToken.attribute.idLexeme, lexeme, VID_LEN);
-		currentToken.attribute.idLexeme[VID_LEN] = '\0';
-	}
+    // Default: identifier
+    currentToken.code = ID_T;
+    strncpy(currentToken.attribute.idLexeme, lexeme, VID_LEN);
+    currentToken.attribute.idLexeme[VID_LEN] = '\0';
 
-	return currentToken;
+    return currentToken;
 }
 
 
@@ -949,6 +903,10 @@ q_void printToken(Token t) {
 			break;
 		}
 		break;
+
+	case COMMA_T:
+    printf("COMMA_T\n");
+    break;
 
 	default:
 		printf("Scanner error: invalid token code: %d\n", t.code);

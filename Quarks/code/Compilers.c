@@ -104,6 +104,14 @@ q_int main(int argc, char** argv) {
 		printf("%s%c%s", "\n[Option '", PGM_RDR, "': Starting READER .....]\n\n");
 		main2Reader(argc, argv);
 		break;
+	case PGM_SCN:
+		printf("%s%c%s", "\n[Option '", PGM_SCN, "': Starting SCANNER .....]\n\n");
+		main3Scanner(argc, argv);
+		break;
+	case PGM_PSR:
+		printf("%s%c%s", "\n[Option '", PGM_PSR, "': Starting PARSER .....]\n\n");
+		main4Parser(argc, argv);
+		break;
 	default:
 		printf("%s%c%s%c%s%c%s%c%s%c%s", "OPTIONS:\n* [",
 			PGM_CDR, "] - Coder\n* [",
