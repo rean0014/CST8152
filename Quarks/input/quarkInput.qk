@@ -3,10 +3,10 @@
 Here is a multi line 
 comment~
 
-par pau = qkUp <> qkDown'
+par helium = qkUp <> &hola'
 
-&pau + 1 = 5'
+~ &helium + 1 = 5'
 
-function sub (&pau, par &lo) {
-  return &pau - &lo'
-}
+function sub (nuc hydrogen, par carbon) {
+  return &hydrogen - &carbon'
+} ~

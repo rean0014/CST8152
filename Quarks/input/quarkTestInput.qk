@@ -1,0 +1,12 @@
+~ Welcome to Quarks - this is a comment ~
+
+~ water creation ~
+atom hydrogen = 1'
+atom oxygen = 8'
+mol water = 0'
+
+&water = (2*&hydrogen) <> &oxygen'
+
+function subtract (par matter, par matter2) {
+  return &matter - &matter2'
+}
