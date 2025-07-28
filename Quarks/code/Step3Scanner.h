@@ -69,7 +69,7 @@
 #define RTE_CODE 1  /* Value for run-time error */
 
 /* TO_DO: Define the number of tokens */
-#define NUM_TOKENS 25
+#define NUM_TOKENS 26
 
 /* TO_DO: Define Token codes - Create your token classes */
 enum TOKENS {
@@ -95,7 +95,8 @@ enum TOKENS {
 	GTN_T,		/* 19: Greater than operator '>' */
 	ART_T,		/* 20: Arithmetic operator token */
 	FLT_T,		/* 21: Floating-point literal token */
-	REL_T,		/* 22: Relational operator token*/
+	EQL_T,		/* 22: Relational operator token*/
+	NEQ_T,		/* 23: Not equal operator '!=' */
 	AMP_T,		/* 23: Ampersand token (&) */
 	COMMA_T		/* 24: Comma token ',' */
 };
@@ -124,7 +125,8 @@ static q_str tokenStrTable[NUM_TOKENS] = {
 	"GTN_T",
 	"ART_T",
 	"FLT_T",
-	"REL_T",
+	"EQL_T",
+	"NEQ_T",
 	"AMP_T",
 	"COMMA_T"
 };
@@ -308,6 +310,7 @@ Token funcErr	(q_str lexeme);
 Token funcAmpID(q_str lexeme);
 Token funcAmp(q_str lexeme);
 Token funcFLT(q_str lexeme);
+Token funcSTR(q_str lexeme);
 
 /* 
  * Accepting function (action) callback table (array) definition 
@@ -351,7 +354,7 @@ Language keywords
 */
 
 /* TO_DO: Define the number of Keywords from the language */
-#define KWT_SIZE 17
+#define KWT_SIZE 18
 
 /* TO_DO: Define the list of keywords */
 static q_str keywordTable[KWT_SIZE] = {
@@ -372,6 +375,7 @@ static q_str keywordTable[KWT_SIZE] = {
 	"qkCharm", 		/* KW15 */
 	"qkTop", 		/* KW16 */
 	"qkBottom",		/* KW17 */
+	"qout"
 };
 
 /* NEW SECTION: About indentation */

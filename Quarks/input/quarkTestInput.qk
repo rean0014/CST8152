@@ -1,12 +1,23 @@
 ~ Welcome to Quarks - this is a comment ~
 
-~ water creation ~
+~ Declaring Variables ~
 atom hydrogen = 1'
-atom oxygen = 8'
+atom oxygen = 1'
 mol water = 0'
 
-&water = (2*&hydrogen) <> &oxygen'
+~ Creating string ~
+par test = "This is a string"'
 
-function subtract (par matter, par matter2) {
-  return &matter - &matter2'
+~ Printing out a string ~
+qout("Water is equal to: " + ((2 * &hydrogen) <> &oxygen))'
+
+~ Reassigning water value to hydrogen peroxide ~
+&water = (2*&hydrogen) <> (2*&oxygen)'
+
+function subtract (par firstMolecule, par secondMolecule) {
+  return &firstMolecule - &secondMolecule'
+}
+
+if (((2*&hydrogen) <> (2*&oxygen)) >= &water) {
+  return "Hydrogen peroxide is equal or greater than water's composition"'
 }

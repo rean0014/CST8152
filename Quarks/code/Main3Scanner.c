@@ -181,9 +181,6 @@ q_int main3Scanner(q_int argc, q_str* argv) {
 	do {
 		currentToken = tokenizer();
 				
-		if (currentToken.code == STR_T) {
-			printf("String literal offset: %d\n", currentToken.attribute.codeType);
-		}
 		printToken(currentToken);
 	} while (currentToken.code != SEOF_T);
 

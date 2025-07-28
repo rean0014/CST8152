@@ -96,11 +96,12 @@ enum KEYWORDS {
 	KW_qkStrange,	 /* 13: qkStrange */
 	KW_qkCharm,		 /* 14: qkCharm */
 	KW_qkTop,		 /* 15: qkTop */
-	KW_qkBottom		 /* 16: qkBottom */
+	KW_qkBottom,		 /* 16: qkBottom */
+	KW_qout 		 /* 17: qout */
 };
 
 /* TO_DO: Define the number of BNF rules */
-#define NUM_BNF_RULES 16
+#define NUM_BNF_RULES 17
 
 /* Parser */
 typedef struct parserData {
@@ -138,6 +139,7 @@ enum BNF_RULES {
 	BNF_returnStatement,   				/* 13 */
 	BNF_assignmentStatement, 			/* 14 */
 	BNF_expression,								/* 15 */
+	BNF_paramList									/* 16 */
 };
 
 
@@ -158,16 +160,13 @@ static q_str BNFStrTable[NUM_BNF_RULES] = {
 	"BNF_optParams",
 	"BNF_returnStatement",
 	"BNF_assignmentStatement",
-	"BNF_expression"
+	"BNF_expression",
+	"BNF_paramList"
 };
 
 /* TO_DO: Place ALL non-terminal function declarations */
-q_void codeSession();
 q_void comment();
-q_void dataSession();
-q_void optVarListDeclarations();
 q_void optionalStatements();
-q_void outputStatement();
 q_void outputVariableList();
 q_void program();
 q_void statement();
@@ -178,5 +177,6 @@ q_void paramList();
 q_void returnStatement();
 q_void assignmentStatement();
 q_void expression();
+q_void recursionData();
 
 #endif

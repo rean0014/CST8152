@@ -141,6 +141,7 @@ Token tokenizer(q_void) {
 	q_int lexEnd;
 	q_int lexLength;
 	q_int i;
+	q_char nextChar;
 
 	q_str lexeme;
 	lexeme = (q_str)malloc(VID_LEN * sizeof(q_char));
@@ -228,9 +229,13 @@ Token tokenizer(q_void) {
 				return currentToken;
 
 			case LTN_CHR: { 	//'<'
-					q_char nextChar = readerGetChar(sourceBuffer);
+					nextChar = readerGetChar(sourceBuffer);
 					if (nextChar == GTN_CHR) {  // '>'
 							currentToken.code = COMB_T;  // Define this token in your token codes enum
+							scData.scanHistogram[currentToken.code]++;
+							return currentToken;
+					} else if (nextChar == EQL_CHR) {  // '<='
+							currentToken.code = LTE_T;  // Define this token in your token codes enum
 							scData.scanHistogram[currentToken.code]++;
 							return currentToken;
 					} else {
@@ -241,10 +246,50 @@ Token tokenizer(q_void) {
 							return currentToken;
 					}
 				}
+
+			case GTN_CHR: { 	// '>'
+				nextChar = readerGetChar(sourceBuffer);
+				if (nextChar == EQL_CHR) {  // '>='
+					currentToken.code = GTE_T;  
+					scData.scanHistogram[currentToken.code]++;
+					return currentToken;
+				} else {
+					readerRetract(sourceBuffer);
+					currentToken.code = GTN_T; // Your existing token code for '>'
+					scData.scanHistogram[currentToken.code]++;
+					return currentToken;
+				}
+			}
+
 			case EQL_CHR:   // '='
-				currentToken.code = ASSIGN_T;
-				scData.scanHistogram[currentToken.code]++;
-				return currentToken;
+				nextChar = readerGetChar(sourceBuffer);
+				if (nextChar == EQL_CHR) {  // '=='
+					currentToken.code = EQL_T;
+					currentToken.attribute.relationalOperator = OP_EQ;
+					scData.scanHistogram[currentToken.code]++;
+					return currentToken;
+				} else {
+					readerRetract(sourceBuffer); // retract nextChar
+					currentToken.code = ASSIGN_T; // '='
+					scData.scanHistogram[currentToken.code]++;
+					return currentToken;
+				}
+
+			case NOT_CHR: 
+				nextChar = readerGetChar(sourceBuffer);
+				if (nextChar == EQL_CHR) {  // '!='
+					currentToken.code = NEQ_T;
+					currentToken.attribute.relationalOperator = OP_NE;
+					scData.scanHistogram[currentToken.code]++;
+					return currentToken;
+				} else {
+					readerRetract(sourceBuffer); // retract nextChar2
+					currentToken.code = ERR_T; // '!'
+					strncpy(currentToken.attribute.errLexeme, "Invalid token: !", ERR_LEN);
+					currentToken.attribute.errLexeme[ERR_LEN] = '\0';
+					scData.scanHistogram[currentToken.code]++;
+					return currentToken;
+				}
 
 			case PLS_CHR:   // '+'
 				currentToken.code = ART_T;
@@ -340,6 +385,74 @@ Token tokenizer(q_void) {
 			case CMA_CHR:
 				currentToken.code = COMMA_T;
 				scData.scanHistogram[currentToken.code]++;
+				return currentToken;
+
+			case QUT_CHR:
+				currentToken.code = STR_T;
+				scData.scanHistogram[currentToken.code]++;
+				lexemeBuffer = readerCreate(SCANNER_MAX_LEX);
+				if (!lexemeBuffer) {
+						fprintf(stderr, "Scanner error: Failed to create lexeme buffer\n");
+						exit(1);
+				}
+
+				// Collect characters up to the apostrophe (') which ends the string
+				while (1) {
+					c = readerGetChar(sourceBuffer);
+
+					if (c == (q_char)EOF_CHR || c == EOS_CHR) {
+							fprintf(stderr, "Scanner error: Unterminated string literal\n");
+							currentToken.code = ERR_T;
+							strncpy(currentToken.attribute.errLexeme, "Unterminated string literal", ERR_LEN);
+							currentToken.attribute.errLexeme[ERR_LEN] = '\0';
+							readerFree(lexemeBuffer);
+							return currentToken;
+					}
+
+					if (c == QUT_CHR) {
+							break; // End of string
+					}
+
+					if (c == '\\') {
+							// Escape sequence
+							q_char next = readerGetChar(sourceBuffer);
+							switch (next) {
+									case 'n':
+											readerAddChar(lexemeBuffer, '\n');
+											break;
+									case 't':
+											readerAddChar(lexemeBuffer, '\t');
+											break;
+									case '"':
+											readerAddChar(lexemeBuffer, '\"');
+											break;
+									case '\'':
+											readerAddChar(lexemeBuffer, '\'');
+											break;
+									case '\\':
+											readerAddChar(lexemeBuffer, '\\');
+											break;
+									default:
+                    readerAddChar(stringLiteralTable, lexeme[i]);
+							}
+					} else {
+							readerAddChar(lexemeBuffer, c);
+					}
+				}
+
+				readerAddChar(lexemeBuffer, READER_TERMINATOR);
+				lexeme = readerGetContent(lexemeBuffer, 0);
+				if (!lexeme) {
+						fprintf(stderr, "Scanner error: Lexeme is NULL\n");
+						currentToken.code = ERR_T;
+						strncpy(currentToken.attribute.errLexeme, "Null lexeme", ERR_LEN);
+						currentToken.attribute.errLexeme[ERR_LEN] = '\0';
+						readerFree(lexemeBuffer);
+						return currentToken;
+				}
+
+				currentToken = funcSL(lexeme); 
+				readerFree(lexemeBuffer);
 				return currentToken;
 
 			default:
@@ -661,66 +774,47 @@ Token funcID(q_str lexeme) {
 /* TO_DO: Adjust the function for SL */
 
 Token funcSL(q_str lexeme) {
-    Token currentToken = {0};
-    q_int i;
-    BufferPointer tempProcessedString = NULL;
+    Token t;
+    t.code = STR_T;
 
-    if (!lexeme || strlen(lexeme) < 2 || lexeme[0] != SQT_CHR || lexeme[strlen(lexeme) - 1] != SQT_CHR) {
-        currentToken.code = ERR_T;
-        snprintf(currentToken.attribute.errLexeme, ERR_LEN, "Invalid string literal (missing quotes or empty): '%s'", lexeme ? lexeme : "NULL");
-        currentToken.attribute.errLexeme[ERR_LEN] = EOS_CHR;
-        return currentToken;
-    }
+    // Get the current offset in the string literal table
+		q_int offset = readerGetChar(stringLiteralTable);
 
-    tempProcessedString = readerCreate(strlen(lexeme) + 1);
-    if (!tempProcessedString) {
-        fprintf(stderr, "Scanner error: Cannot create temporary buffer for string literal processing.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    for (i = 1; i < (q_int)strlen(lexeme) - 1; i++) {
-        q_char c = lexeme[i];
-
-        if (c == '\\') {
-            i++;
-            if (i >= (q_int)strlen(lexeme) - 1) {
-                currentToken.code = ERR_T;
-                snprintf(currentToken.attribute.errLexeme, ERR_LEN, "Invalid escape sequence (dangling backslash) in string literal: '%s'", lexeme);
-                currentToken.attribute.errLexeme[ERR_LEN] = EOS_CHR;
-                readerFree(tempProcessedString);
-                return currentToken;
-            }
-
-            q_char escapedChar = lexeme[i];
-
-            switch (escapedChar) {
-                case 'n':  readerAddChar(tempProcessedString, '\n'); break;
-                case 't':  readerAddChar(tempProcessedString, '\t'); break;
-                case 'r':  readerAddChar(tempProcessedString, '\r'); break;
-                case '\\': readerAddChar(tempProcessedString, '\\'); break;
-                case '\'': readerAddChar(tempProcessedString, '\''); break;
-                case '"':  readerAddChar(tempProcessedString, '"'); break;
-                default:
-                    currentToken.code = ERR_T;
-                    snprintf(currentToken.attribute.errLexeme, ERR_LEN, "Invalid escape sequence '\\%c' in string literal: '%s'", escapedChar, lexeme);
-                    currentToken.attribute.errLexeme[ERR_LEN] = EOS_CHR;
-                    readerFree(tempProcessedString);
-                    return currentToken;
-            }
-        } else {
-            readerAddChar(tempProcessedString, c);
+    // Add the string characters to the table
+    for (int i = 0; lexeme[i] != '\0'; i++) {
+        if (!readerAddChar(stringLiteralTable, lexeme[i])) {
+            fprintf(stderr, "Scanner error: Failed to add character to stringLiteralTable\n");
+            t.code = ERR_T;
+            strncpy(t.attribute.errLexeme, lexeme, ERR_LEN);
+            t.attribute.errLexeme[ERR_LEN] = '\0';
+            return t;
         }
     }
 
-		readerAddChar(tempProcessedString, READER_TERMINATOR);
+		// Append a newline character
+    if (!readerAddChar(stringLiteralTable, '\n')) {
+        fprintf(stderr, "Scanner error: Failed to add newline to stringLiteralTable\n");
+        t.code = ERR_T;
+        strncpy(t.attribute.errLexeme, lexeme, ERR_LEN);
+        t.attribute.errLexeme[ERR_LEN] = '\0';
+        return t;
+    }
 
-		currentToken.code = STR_T;
-		currentToken.attribute.contentString = readerGetPosRead(tempProcessedString);
+    // Add null terminator to end the string
+    if (!readerAddChar(stringLiteralTable, READER_TERMINATOR)) {
+        fprintf(stderr, "Scanner error: Failed to terminate stringLiteralTable\n");
+        t.code = ERR_T;
+        strncpy(t.attribute.errLexeme, lexeme, ERR_LEN);
+        t.attribute.errLexeme[ERR_LEN] = '\0';
+        return t;
+    }
 
-		readerFree(tempProcessedString);
+    // Set the offset in the token
+    t.attribute.contentString = offset;
+    return t;
+}
 
-		return currentToken;
-	}
+
 
 /*
 ************************************************************
@@ -802,8 +896,12 @@ q_void printToken(Token t) {
 	case ERR_T:
 		printf("ERR_T\t\t%s\n", t.attribute.errLexeme);
 		break;
-	case REL_T:
-		printf("REL_T\t\t%u\n", t.attribute.relationalOperator);
+	case EQL_T:
+		printf("EQL_T\t\t\n");
+		break;
+	
+	case NEQ_T:
+		printf("NEQ_T\t\t\n");
 		break;
 
 	case SEOF_T:
@@ -819,8 +917,7 @@ q_void printToken(Token t) {
     break;
 
 	case STR_T:
-		printf("STR_T\t\t%d\t ", (q_int)t.attribute.contentString);
-		printf("%s\n", readerGetContent(stringLiteralTable, (q_int)t.attribute.contentString));
+		printf("STR_T\t\t\n");
 		break;
 
 	case LPR_T:

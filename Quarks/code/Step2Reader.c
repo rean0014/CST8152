@@ -402,7 +402,7 @@ q_int readerPrint(BufferPointer const readerPointer) {
 			|| readerPointer->content[i]  == ' ' || isprint(readerPointer->content[i] )) {
 			putchar(readerPointer->content[i] );
 		} else {
-			putchar(' '); // Prints if char is invalid
+			// putchar(' '); // Prints if char is invalid
 		}
 		charsPrinted++;
 	}
