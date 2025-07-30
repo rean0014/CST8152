@@ -354,7 +354,7 @@ Language keywords
 */
 
 /* TO_DO: Define the number of Keywords from the language */
-#define KWT_SIZE 18
+#define KWT_SIZE 20
 
 /* TO_DO: Define the list of keywords */
 static q_str keywordTable[KWT_SIZE] = {
@@ -375,7 +375,9 @@ static q_str keywordTable[KWT_SIZE] = {
 	"qkCharm", 		/* KW15 */
 	"qkTop", 		/* KW16 */
 	"qkBottom",		/* KW17 */
-	"qout"
+	"electron", 	/* KW18 */
+	"qout",		/* KW19 */
+	"text"	/* KW20 */
 };
 
 /* NEW SECTION: About indentation */

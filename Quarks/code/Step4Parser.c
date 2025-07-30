@@ -61,6 +61,8 @@
 /* Parser data */
 extern ParserData psData; /* BNF statistics */
 
+q_int count;
+
 /*
 ************************************************************
  * Process Parser
@@ -269,16 +271,42 @@ q_void program() {
 				matchToken(LBR_T, NO_ATTR); // '{'
 				optionalStatements(); // statements
 				matchToken(RBR_T, NO_ATTR); // '}'
+			} else if (lookahead.attribute.codeType == KW_par) {
+					matchToken(KW_T, KW_par);  // e.g., 'par'
+					matchToken(ID_T, NO_ATTR);  // e.g., &thing1
+					matchToken(ASSIGN_T, NO_ATTR);  // e.g., '='
+					recursionPARKEY();  // Process parameters
+			} else if (lookahead.attribute.codeType == KW_text) {
+					matchToken(KW_T, KW_text);  // e.g., 'text'
+					matchToken(ID_T, NO_ATTR);  // e.g., thing1
+					matchToken(ASSIGN_T, NO_ATTR);  // e.g., '='
+					matchToken(STR_T, NO_ATTR); // string literal
+					while (lookahead.code == ART_T && lookahead.attribute.arithmeticOperator == OP_ADD) {
+						matchToken(ART_T, OP_ADD); // '+'
+						if (lookahead.code == STR_T) {
+							matchToken(STR_T, NO_ATTR); // string literal
+						} else if (lookahead.code == INL_T || lookahead.code == FLT_T) {
+							matchToken(lookahead.code, NO_ATTR); // numeric literal
+						} else if (lookahead.code == VAR_T) {
+							matchToken(VAR_T, NO_ATTR); // numeric literal
+						} else {
+							printError();
+							return; // exit on error
+						}
+					}
+					matchToken(EOS_T, NO_ATTR); // end of string
+					printf("%s%s\n", STR_LANGNAME, ": Text output parsed");
 			} else {
-				matchToken(KW_T, lookahead.attribute.codeType); // e.g., 'par'
-				matchToken(ID_T, NO_ATTR); // identifier
-				matchToken(ASSIGN_T, NO_ATTR); // '='
-				if (lookahead.attribute.arithmeticOperator == OP_MUL
-						|| lookahead.attribute.arithmeticOperator == OP_DIV) {
-					printError();
-					return; 
-				}
-				expression(); // statements
+					matchToken(KW_T, lookahead.attribute.codeType); 
+					matchToken(ID_T, NO_ATTR); // identifier
+					matchToken(ASSIGN_T, NO_ATTR); // '='
+					if (lookahead.code == ART_T &&
+							(lookahead.attribute.arithmeticOperator == OP_MUL
+							|| lookahead.attribute.arithmeticOperator == OP_DIV)) {
+						printError();
+						return; 
+					}
+					expression(); // statements
 			}
 			break;
 		
@@ -350,6 +378,101 @@ q_void optParams() {
     printf("%s%s\n", STR_LANGNAME, ": Optional parameters parsed");
 }
 
+
+q_void recursionPARKEY() {
+	q_int loop = 1;
+
+	while(loop) {
+		switch (lookahead.code) {
+			case INL_T:
+			case FLT_T:
+				matchToken(INL_T, NO_ATTR);  // e.g., 42
+				if (lookahead.attribute.arithmeticOperator == OP_MUL) {
+					matchToken(lookahead.code, NO_ATTR);  // e.g., '*'
+				} else {
+					printError();  // Unexpected token after number
+					loop = 0;  // Exit loop
+					count = 0;  // Reset parentheses counter
+					return;
+				}
+				if (lookahead.attribute.codeType == KW_qkBottom ||
+						lookahead.attribute.codeType == KW_qkCharm ||
+						lookahead.attribute.codeType == KW_qkStrange ||
+						lookahead.attribute.codeType == KW_qkTop ||
+						lookahead.attribute.codeType == KW_qkUp ||
+						lookahead.attribute.codeType == KW_qkDown||
+						lookahead.attribute.codeType == KW_electron ||
+						lookahead.attribute.codeType == INL_T) {
+					matchToken(KW_T, lookahead.attribute.codeType);  // e.g., 'qkBottom'
+				} else {
+					printError();  // Unexpected token after '*'
+					loop = 0;  // Exit loop
+					count = 0;  // Reset parentheses counter
+					return;
+				}
+				break;
+
+			case KW_T:
+				switch (lookahead.attribute.codeType) {
+					case KW_qkBottom:
+					case KW_qkCharm:
+					case KW_qkDown:
+					case KW_qkStrange:
+					case KW_qkTop:
+					case KW_qkUp:
+					case KW_electron:
+						matchToken(KW_T, lookahead.attribute.codeType);  
+						break;
+
+					default:
+						printError();  // Unexpected keyword
+						loop = 0;  // Exit loop
+						count = 0;  // Reset parentheses counter
+						return;
+				}
+				break;
+
+			case LPR_T:
+				matchToken(LPR_T, NO_ATTR);
+				if ((lookahead.code == EOS_T) || (lookahead.code == RPR_T)) {
+					printError();
+					break;
+				}
+				count++; // Increment parentheses counter
+				break;
+
+			case RPR_T: 
+				if (count > 0) {
+					matchToken(RPR_T, NO_ATTR);
+					count--; // Decrement parentheses counter
+					break;
+				} else {
+					printError();
+					loop = 0; // End of output variable list
+					count = 0; // Reset parentheses counter
+				}
+				break;
+
+			case COMB_T:
+				matchToken(COMB_T, NO_ATTR); 
+				break;
+
+			case EOS_T:
+				matchToken(EOS_T, NO_ATTR);  // e.g., '''
+				loop = 0;  // Exit loop after EOS
+				count = 0;  // Reset parentheses counter
+				break;
+			
+			default:
+				printError();  // Unexpected token
+				loop = 0;  // Exit loop
+				count = 0;  // Reset parentheses counter
+				break;
+		}
+	}
+
+	printf("%s%s\n", STR_LANGNAME, ": Parameter key recursion parsed");
+}
 
 /*
  ************************************************************
@@ -446,29 +569,43 @@ q_void paramList() {
  */
 q_void optionalStatements() {
 	psData.parsHistogram[BNF_optionalStatements]++;
-	switch (lookahead.code) {
-	case CMT_T:
-		comment();
-		// fall through to allow statements after comment
-		break;
-	case KW_T:
-		// Start statements if keyword is one that begins a statement
-		switch (lookahead.attribute.codeType) {
-		case KW_if:
-		case KW_while:
-		case KW_return:
-			statements();
+	q_int loop = 1;
+
+	while (loop) {
+		switch (lookahead.code) {
+			case CMT_T:
+				comment();
+				// fall through to allow statements after comment
+				break;
+			case KW_T:
+				// Start statements if keyword is one that begins a statement
+				switch (lookahead.attribute.codeType) {
+					case KW_if:
+					case KW_while:
+					case KW_return:
+						statements();
+						break;
+
+					case KW_qout:
+						matchToken(KW_T, KW_qout); // 'qout'
+						matchToken(LPR_T, NO_ATTR); // '('
+						outputVariableList();       // output variable list
+						break;
+						
+					default:
+						; // no statement start
+					}
 			break;
-		default:
-			; // no statement start
+
+			case VAR_T:
+				// Variables can start statements like assignments
+				statements();
+				break;
+
+			default:
+				loop = 0; // Exit loop on error
+				; // empty - no statements
 		}
-		break;
-	case VAR_T:
-		// Variables can start statements like assignments
-		statements();
-		break;
-	default:
-		; // empty - no statements
 	}
 	printf("%s%s\n", STR_LANGNAME, ": Optional statements parsed");
 }
@@ -542,18 +679,14 @@ q_void statement() {
         break;
 
     case ID_T:
-				matchToken(ID_T, NO_ATTR);
-        assignmentStatement();
+			matchToken(ID_T, NO_ATTR);
+        	assignmentStatement();
         break;
 
 		case VAR_T:
-				matchToken(VAR_T, NO_ATTR);
-				assignmentStatement();
-				break;
-
-		case STR_T:
-				matchToken(STR_T, NO_ATTR);
-				break;
+			matchToken(VAR_T, NO_ATTR);
+			assignmentStatement();
+			break;
 
     default:
         printError();
@@ -650,6 +783,7 @@ q_void expression() {
 				case KW_qkTop:
 				case KW_qkStrange:
 				case KW_qkCharm:
+				case KW_electron:
 					break;
 				
 				default:
@@ -705,11 +839,7 @@ q_void expression() {
 				break;
 
 			case RPR_T:
-				return; // End of expression, return to previous level
-
-			case STR_T:      
-				matchToken(STR_T, NO_ATTR);
-				break;
+				return; // End of expression, return to previous levels
 
 			case EOS_T:      
 				matchToken(EOS_T, NO_ATTR);
@@ -730,7 +860,7 @@ q_void expression() {
 q_void outputVariableList() {
 	psData.parsHistogram[BNF_outputVariableList]++;
 	q_int loop = 1;
-	q_int count = 1; // Counter for parentheses
+	count = 1; // Counter for parentheses
 
 	if (lookahead.code == EOS_T
 			|| lookahead.code == RPR_T
@@ -769,6 +899,7 @@ q_void outputVariableList() {
 					default:
 						printError();
 						loop = 0; // End of output variable list
+						count = 0; // Reset parentheses counter
 						break;
 				}
 				break;
@@ -789,6 +920,8 @@ q_void outputVariableList() {
 				matchToken(LPR_T, NO_ATTR);
 				if ((lookahead.code == EOS_T) || (lookahead.code == RPR_T)) {
 					printError();
+					loop = 0; // End of output variable list
+					count = 0; // Reset parentheses counter
 					break;
 				}
 				count++; // Increment parentheses counter
@@ -803,16 +936,19 @@ q_void outputVariableList() {
 				} else {
 					printError();
 					loop = 0; // End of output variable list
+					count = 0; // Reset parentheses counter
 				}
 				break;
 
 			case EOS_T:
 				matchToken(EOS_T, NO_ATTR);
 				loop = 0; // End of output variable list
+				count = 0; // Reset parentheses counter
 				break;
 
 			default:
 				loop = 0; // End of output variable list
+				count = 0; // Reset parentheses counter
 				printError();
 				break;
 		}
@@ -837,6 +973,7 @@ q_void recursionData() {
 					matchToken(ART_T, OP_ADD);
 					if (lookahead.code == EOS_T) {
 						printError();
+						count = 0; // Reset parentheses counter
 						break;
 					}
 					break;
@@ -850,11 +987,13 @@ q_void recursionData() {
 							lookahead.code == RPR_T ||
 							lookahead.code == STR_T) {
 						printError();
+						count = 0; // Reset parentheses counter
 						break;
 					}
 					break;
 				default:
 					printError();
+					count = 0; // Reset parentheses counter
 					break;
 			}
 			break;
@@ -863,6 +1002,7 @@ q_void recursionData() {
 			matchToken(COMB_T, NO_ATTR);
 			if (lookahead.code == EOS_T) {
 				printError();
+				count = 0; // Reset parentheses counter
 				break;
 			}
 			break;

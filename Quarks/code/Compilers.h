@@ -58,7 +58,7 @@
 	* ............................................................................
 	*/
 
-	/* TO_DO: Adjust your language (cannot be "sofia") */
+	/* TO_DO: Adjust your language (cannot be "") */
 	/* Language name */
 	#define STR_LANGNAME	"Quark"
 
@@ -117,6 +117,7 @@
 	q_int main2Reader	(q_int argc, q_str* argv);
 	q_int main3Scanner	(q_int argc, q_str* argv);
 	q_int main4Parser	(q_int argc, q_str* argv);
+	q_int main5Writer	(q_int argc, q_str* argv);
 
 	q_void printLogo();
 	q_void errorPrint(q_str fmt, ...);

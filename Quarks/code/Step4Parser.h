@@ -57,10 +57,10 @@
 #include "Compilers.h"
 #endif
 #ifndef READER_H_
-#include "Reader.h"
+#include "Step2Reader.h"
 #endif
 #ifndef SCANNER_H_
-#include "Scanner.h"
+#include "Step3Scanner.h"
 #endif
 
 /* Global vars */
@@ -97,7 +97,9 @@ enum KEYWORDS {
 	KW_qkCharm,		 /* 14: qkCharm */
 	KW_qkTop,		 /* 15: qkTop */
 	KW_qkBottom,		 /* 16: qkBottom */
-	KW_qout 		 /* 17: qout */
+	KW_electron,	 /* 17: electron */
+	KW_qout, 		 /* 17: qout */
+	KW_text			 /* 18: text */
 };
 
 /* TO_DO: Define the number of BNF rules */
@@ -178,5 +180,6 @@ q_void returnStatement();
 q_void assignmentStatement();
 q_void expression();
 q_void recursionData();
+q_void recursionPARKEY();
 
 #endif
