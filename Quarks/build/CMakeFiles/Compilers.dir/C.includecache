@@ -1,0 +1,62 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Compilers.h
+
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Main4Parser.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+stdarg.h
+-
+Compilers.h
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Compilers.h
+Step2Reader.h
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Step2Reader.h
+Step3Scanner.h
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Step3Scanner.h
+Step4Parser.h
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Step4Parser.h
+
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Step2Reader.h
+Compilers.h
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Compilers.h
+stdio.h
+-
+stdlib.h
+-
+limits.h
+-
+
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Step3Scanner.h
+Compilers.h
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Compilers.h
+Step2Reader.h
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Step2Reader.h
+_null.h
+-
+
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Step4Parser.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+stdarg.h
+-
+Compilers.h
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Compilers.h
+Step2Reader.h
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Step2Reader.h
+Step3Scanner.h
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/code/Step3Scanner.h
+

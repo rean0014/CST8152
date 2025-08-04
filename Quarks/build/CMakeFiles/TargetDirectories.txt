@@ -1,0 +1,3 @@
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/Bianca/OneDrive - Algonquin College/School/Spring 2025/Compilers/CST8152/Quarks/build/CMakeFiles/Compilers.dir

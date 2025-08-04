@@ -1,23 +1,21 @@
-~ Welcome to Quarks - this is a comment ~
+~ Welcome to Quarks, this is a comment ~
 
 ~ Declaring Variables ~
-atom hydrogen = 1'
-atom oxygen = 1'
-mol water = 0'
+par hydrogen = 20'
+par oxygen = 30'
 
-~ Creating string ~
-par test = "This is a string"'
+~ Expression Variables ~
+text galaxy = "Milky Way"'
+mol exp1 = &hydrogen + &oxygen'
+mol exp2 = 2 * 40 / 10 + 17'
 
-~ Printing out a string ~
-qout("Water is equal to: " + ((2 * &hydrogen) <> &oxygen))'
+~ Ouput statment ~
+qout(&hydrogen +"plus"+ &oxygen +"should equal"+ &exp1)'
 
-~ Reassigning water value to hydrogen peroxide ~
-&water = (2*&hydrogen) <> (2*&oxygen)'
+~Function ~
+function func1 (par param1, par param2) {
 
-function subtract (par firstMolecule, par secondMolecule) {
-  return &firstMolecule - &secondMolecule'
-}
+    qout("Hi I'm inside the function and also inside the"+ &galaxy)'
 
-if (((2*&hydrogen) <> (2*&oxygen)) >= &water) {
-  return "Hydrogen peroxide is equal or greater than water's composition"'
+    return &param1 - &param2'
 }
