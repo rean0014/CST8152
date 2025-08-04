@@ -1,0 +1,128 @@
+commit 73e0ae63cc232d5f7f9f60f0a163ea9bf0b9727b
+Author: Bianca Reaney Ibarra <rean0014@algonquinlive.com>
+Date:   Sun Aug 3 22:18:09 2025 -0400
+
+    final dsl code
+
+commit 68e4b8073c15828160845108a5c2196de74cc009
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Wed Jul 30 14:19:57 2025 -0400
+
+    First approacjh for A5
+
+commit 6858814f6ac161137dd22e92627c1d92ca44448c
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Sun Jul 27 23:32:34 2025 -0400
+
+    last changes for parser (maybe)
+
+commit b0b63ac46c0e8341f27843cb353d0688def5b803
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Thu Jul 24 15:13:54 2025 -0400
+
+    updating input files just in case
+
+commit 34065a80501d335e315c057724357b025fb354f2
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Thu Jul 24 15:12:27 2025 -0400
+
+    Testing Parser A4
+
+commit 5caa578d8081e756e222506ab50a6a1e5f33ee99
+Merge: 7dd8620 7f760d3
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Sun Jul 13 22:40:21 2025 -0400
+
+    Merge pull request #3 from rean0014/a3Scanner
+    
+    Assignment 3 'Scanner'
+
+commit 7f760d379d7eb38c6e5fa3f73df809dca93ebdce
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Sun Jul 13 22:38:13 2025 -0400
+
+    Assignment 3 'Scanner'
+
+commit 7dd8620ee44d761a9e5c1faa9ed8ee94c5f7411d
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Sun Jul 13 22:23:22 2025 -0400
+
+    Delete A1 directory
+
+commit a066c2629dc46b41e30db77937717b77e9a95a62
+Merge: e4d01f3 fa187f1
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Sun Jul 13 22:20:47 2025 -0400
+
+    Merge pull request #2 from rean0014/a1branch
+    
+    Review last Assignment
+
+commit fa187f11531cb5c399417267c0c569dad1f0d932
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Sun Jul 13 22:13:10 2025 -0400
+
+    Delete logo.png
+
+commit dd42f132123dc41c083769a77c72d7ab9d2bd32d
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Sun Jul 13 22:12:55 2025 -0400
+
+    Delete a1files directory
+
+commit f8663fcbf9a56cb94c095c1df1ae0b2f2347dd42
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Sun Jul 13 22:10:04 2025 -0400
+
+    Delete QuarksCopy/code directory
+
+commit f9bc95ce5745c2163d9cdfb997f4480032557603
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Sun Jun 8 23:32:26 2025 -0400
+
+    Assignment2
+
+commit e4d01f3f55710f593502918e291db72265534dea
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Wed May 21 14:00:34 2025 -0400
+
+    adding gitLogs
+
+commit 7a5817f5c2c462d1bb1206dec8e1e1fe5037f966
+Author: David Lainez <davidjoselainezaguirre0510@gmail.com>
+Date:   Wed May 21 12:37:57 2025 -0400
+
+    renaming folders
+
+commit 2a2684b2d2f991c49f71d036a5c462aa5f4f4871
+Merge: 2580fbc 32c7f55
+Author: rean0014 <163601743+rean0014@users.noreply.github.com>
+Date:   Wed May 21 12:36:46 2025 -0400
+
+    Merge pull request #1 from rean0014/a1branch
+    
+    names
+
+commit 32c7f551aac68e2120800a4fd6104c16dff6e763
+Author: Bianca Reaney Ibarra <rean0014@algonquinlive.com>
+Date:   Wed May 21 12:30:11 2025 -0400
+
+    names
+
+commit 2580fbc1a25e6fd7bf54f389bc3c5fdcb6e65a95
+Author: rean0014 <163601743+rean0014@users.noreply.github.com>
+Date:   Wed May 21 12:22:50 2025 -0400
+
+    organizing repo
+
+commit 26afa82bc27e9e5bb79eda7e2e47e09413368c57
+Author: rean0014 <163601743+rean0014@users.noreply.github.com>
+Date:   Wed May 21 12:17:40 2025 -0400
+
+    Add files via upload
+
+commit 78d7e92d1c77d0c5101308b8c96886c3dd55168b
+Author: Bianca Reaney Ibarra <rean0014@algonquinlive.com>
+Date:   Thu May 15 09:48:44 2025 -0400
+
+    logo
